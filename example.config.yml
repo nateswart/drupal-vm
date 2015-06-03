@@ -1,5 +1,8 @@
 ---
-# Vagrant hostname and IP configuration.
+# Vagrant configuration.
+# `vagrant_box` can also be set to geerlingguy/centos6, geerlingguy/centos7,
+# geerlingguy/ubuntu1204, parallels/ubuntu-14.04, etc.
+vagrant_box: geerlingguy/ubuntu1404
 vagrant_hostname: drupalvm.dev
 vagrant_ip: 192.168.88.88
 vagrant_user: vagrant
@@ -22,8 +25,12 @@ vagrant_cpus: 2
 
 # Set this to false if you are using a different site deployment strategy and
 # would like to configure 'vagrant_synced_folders' and 'apache_vhosts' manually.
-build_from_makefile: true
+build_makefile: true
 drush_makefile_path: /vagrant/drupal.make.yml
+
+# Set this to false if you don't need to install drupal (using the drupal_*
+# settings below), but instead copy down a database (e.g. using drush sql-sync).
+install_site: true
 
 # Settings for building a Drupal site from a makefile (if 'build_from_makefile'
 # is 'true').
@@ -65,16 +72,16 @@ mysql_users:
 
 # Comment out any extra utilities you don't want to install.
 installed_extras:
+  - adminer
   - mailhog
   - memcached
-  - phpmyadmin
   - pimpmylog
   # - solr
   - xdebug
   - xhprof
 
-# Add any extra apt packages you'd like to install.
-extra_apt_packages: []
+# Add any extra packages you'd like to install.
+extra_packages: []
 
 # You can configure almost anything else on the server in the rest of this file.
 mysql_root_password: root
@@ -93,6 +100,7 @@ firewall_allowed_tcp_ports:
   - "8080"
   - "8443"
   - "8983"
+firewall_log_dropped_packets: false
 
 # PHP Configuration. Currently-supported versions: 5.5, 5.6, 7.0 (experimental).
 php_version: "5.5"
@@ -108,6 +116,7 @@ php_opcache_max_accelerated_files: 4096
 # MySQL Configuration.
 mysql_slow_query_log_enabled: true
 mysql_slow_query_time: 2
+adminer_add_apache_config: true
 
 # Pimp my Log settings.
 pimpmylog_install_dir: /usr/share/php/pimpmylog

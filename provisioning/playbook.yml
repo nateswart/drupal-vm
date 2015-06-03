@@ -5,11 +5,14 @@
     - ../config.yml
 
   pre_tasks:
-    - include: tasks/init.yml
-    - include: tasks/php-versions.yml
+    - include: tasks/init-debian.yml
+      when: ansible_os_family == 'Debian'
+    - include: tasks/init-redhat.yml
+      when: ansible_os_family == 'RedHat'
 
   roles:
     # Essential roles.
+    - { role: geerlingguy.repo-remi, when: ansible_os_family == 'RedHat' }
     - geerlingguy.firewall
     - geerlingguy.git
     - geerlingguy.apache
@@ -26,7 +29,7 @@
     - { role: geerlingguy.php-memcached, when: '"memcached" in installed_extras' }
     - { role: geerlingguy.php-xdebug, when: '"xdebug" in installed_extras' }
     - { role: geerlingguy.php-xhprof, when: '"xhprof" in installed_extras' }
-    - { role: geerlingguy.phpmyadmin, when: '"phpmyadmin" in installed_extras' }
+    - { role: geerlingguy.adminer, when: '"adminer" in installed_extras' }
     - { role: geerlingguy.pimpmylog, when: '"pimpmylog" in installed_extras' }
     - { role: geerlingguy.daemonize, when: '"mailhog" in installed_extras' }
     - { role: geerlingguy.mailhog, when: '"mailhog" in installed_extras' }
@@ -37,9 +40,21 @@
     - { role: geerlingguy.security, when: extra_security_enabled }
 
   tasks:
+    - name: Check if Drupal is already set up.
+      stat: "path={{ drupal_core_path }}/index.php"
+      register: drupal_site
+
     - include: tasks/www.yml
-    - include: tasks/mysql.yml
-    - include: tasks/drupal.yml
-      when: build_from_makefile
+    - include: tasks/apparmor.yml
+      when: ansible_os_family == 'Debian'
+
+    # Build makefile if configured.
+    - include: tasks/build-makefile.yml
+      when: build_makefile
+
+    # Install site if configured.
+    - include: tasks/install-site.yml
+      when: install_site
+
     - include: tasks/drush-aliases.yml
     - include: tasks/extras.yml

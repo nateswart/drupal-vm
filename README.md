@@ -8,7 +8,7 @@ http://www.drupalvm.com/
 
 This project aims to make spinning up a simple local Drupal test/development environment incredibly quick and easy, and to introduce new developers to the wonderful world of Drupal development on local virtual machines (instead of crufty old MAMP/WAMP-based development).
 
-It will install the following on an Ubuntu 14.04 linux VM:
+It will install the following on an Ubuntu 14.04 (by default) linux VM:
 
   - Apache 2.4.x
   - PHP 5.5.x (configurable)
@@ -21,7 +21,7 @@ It will install the following on an Ubuntu 14.04 linux VM:
     - Memcached
     - XHProf, for profiling your code
     - XDebug, for debugging your code
-    - PHPMyAdmin, for accessing databases directly
+    - Adminer, for accessing databases directly
     - Pimp my Log, for easy viewing of log files
     - MailHog, for catching and debugging email
 
@@ -63,7 +63,7 @@ Note for Linux users: *If NFS is not already installed on your host, you will ne
     - Copy `example.config.yml` to `config.yml`.
   3. Create a local directory where Drupal will be installed and configure the path to that directory in `config.yml` (`local_path`, inside `vagrant_synced_folders`).
   4. Open Terminal, cd to this directory (containing the `Vagrantfile` and this README file).
-  5. [Mac/Linux only] Install Ansible Galaxy roles required for this VM: `$ sudo ansible-galaxy install -r requirements.txt`
+  5. [Mac/Linux only] Install Ansible Galaxy roles required for this VM: `$ sudo ansible-galaxy install -r provisioning/requirements.txt`
   6. Type in `vagrant up`, and let Vagrant do its magic.
 
 Note: *If there are any errors during the course of running `vagrant up`, and it drops you back to your command prompt, just run `vagrant provision` to continue building the VM from where you left off. If there are still errors after doing this a few times, post an issue to this project's issue queue on GitHub with the error.*
@@ -78,9 +78,9 @@ Note: *If there are any errors during the course of running `vagrant up`, and it
 By default, this VM includes the extras listed in the `config.yml` option `installed_extras`:
 
     installed_extras:
+      - adminer
       - mailhog
       - memcached
-      - phpmyadmin
       - solr
       - xdebug
       - xhprof
@@ -109,6 +109,10 @@ Drupal VM is built to integrate with every developer's workflow. Many guides for
   - You can change the installed version of Drupal or drush, or any other configuration options, by editing the variables within `config.yml`.
   - Find out more about local development with Vagrant + VirtualBox + Ansible in this presentation: [Local Development Environments - Vagrant, VirtualBox and Ansible](http://www.slideshare.net/geerlingguy/local-development-on-virtual-machines-vagrant-virtualbox-and-ansible).
   - Learn about how Ansible can accelerate your ability to innovate and manage your infrastructure by reading [Ansible for DevOps](https://leanpub.com/ansible-for-devops).
+
+## License
+
+This project is licensed under the MIT open source license.
 
 ## About the Author
 
